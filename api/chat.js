@@ -1,10 +1,9 @@
 export default async function handler(req, res) {
-    // ترويسات CORS
+    // CORS
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-    // رد OPTIONS (مهم جدًا)
     if (req.method === "OPTIONS") {
         return res.status(200).end();
     }
@@ -28,6 +27,11 @@ export default async function handler(req, res) {
         });
 
         const data = await response.json();
+
+        if (!data.choices) {
+            return res.status(500).json({ error: "OpenRouter error", details: data });
+        }
+
         return res.status(200).json(data);
 
     } catch (error) {
@@ -35,4 +39,5 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: "Proxy failed" });
     }
 }
+
 
